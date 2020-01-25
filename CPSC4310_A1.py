@@ -4,11 +4,16 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 
+print("".ljust(30, '\n'))
+print("CPSC 4310 - Assignment 1 code")
+print("By Kyle Akerstrom\n")
+
 print("Checking for NLTK modules...")
 nltk.download("stopwords")
 nltk.download("brown")
 nltk.download("wordnet")
 nltk.download("stopwords")
+print("Done checking required modules!")
 
 lemmatizer = WordNetLemmatizer()
 porter = PorterStemmer()
@@ -25,10 +30,8 @@ def Lemmatize(tagged_word):
 
 class WordList:
     def __init__(self):
-        pass
-
-    words = set()
-    types = set()
+        self.words = set()
+        self.types = set()
 
     def AddTuple(self, tup):
         self.words.add(tup[0])
@@ -46,7 +49,8 @@ Cats[""] = {} # without stopwords
 Cats["lemma"] = {} # without stopwords, with lemmatization
 Cats["stem"] = {} # without stopwords, with stemming
 
-total_words = 0
+total_words = set()
+total_types = set()
 c_index = 0
 c_total = len(brown.categories())
 print("\nCategories Processed:")
@@ -56,23 +60,30 @@ for c in brown.categories():
     for cat in Cats:
         Cats[cat][c] = WordList()
     for w in brown.tagged_words(categories = c):
+        total_words.add(w[0])
+        total_types.add(w[1])
         Cats["stopwords"][c].AddTuple(w)
-        if w not in stopword_list:
+        if w[0] not in stopword_list:
             Cats[""][c].AddTuple(w)
             Cats["lemma"][c].AddTuple((Lemmatize(w), w[1]))
             Cats["stem"][c].AddTuple((porter.stem(w[0]), w[1]))
-    if total_words > 0:
-        quit()
-    total_words += Cats["stopwords"][c].GetWordAmt()
 
+if Cats[""]["adventure"] is Cats[""]["belles_lettres"]:
+    print(">=(")
+    quit()
 
-print('\n')
-print("\tCategory            \tWords\tTypes")
-print("\t--------            \t-----\t-----")
-for c in brown.categories():
-    print("\t", c.ljust(20, ' '), '\t', Cats[""][c].GetWordAmt(), '\t', Cats[""][c].GetTypeAmt(), sep = "")
+disp = [("WITH STOPWORDS:", "stopwords"), \
+    ("WITHOUT STOPWORDS:", ""), \
+    ("WITHOUT STOPWORDS, WITH LEMMATIZATION:", "lemma"), \
+    ("WITHOUT STOPWORDS, WITH STEMMING:", "stem")]
 
-
-# Total words selected
-print("\n\tTotal words selected:")
-print("\t", total_words, sep = "")
+for d in disp:
+    print('\n')
+    print(d[0])
+    print("\tCategory            \tWords\tTypes")
+    print("\t--------            \t-----\t-----")
+    for c in brown.categories():
+        print("\t", c.ljust(20, ' '), '\t', Cats[d[1]][c].GetWordAmt(), '\t', Cats[d[1]][c].GetTypeAmt(), sep = "")
+    
+print("\n\tTotal words:", len(total_words))
+print("\tTotal types:", len(total_words))

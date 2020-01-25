@@ -1,14 +1,14 @@
 # CPSC 4310 - Assignment 1 code
 # Author: Kyle Akerstrom
 
+import re
 import nltk
 from nltk.corpus import brown
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 
-print("".ljust(30, '\n'))
-print("CPSC 4310 - Assignment 1 code")
+print("\n\nCPSC 4310 - Assignment 1 code")
 print("By Kyle Akerstrom\n")
 
 print("Checking for NLTK modules...")
@@ -16,7 +16,6 @@ nltk.download("stopwords")
 nltk.download("brown")
 nltk.download("wordnet")
 nltk.download("stopwords")
-print("Done checking required modules!")
 
 lemmatizer = WordNetLemmatizer()
 porter = PorterStemmer()
@@ -63,13 +62,14 @@ for c in brown.categories():
     for cat in Cats:
         Cats[cat][c] = WordList()
     for w in brown.tagged_words(categories = c):
-        total_words.add(w[0])
-        total_types.add(w[1])
-        Cats["stopwords"][c].AddTuple(w)
-        if w[0] not in stopword_list:
-            Cats[""][c].AddTuple(w)
-            Cats["lemma"][c].AddTuple((Lemmatize(w), w[1]))
-            Cats["stem"][c].AddTuple((porter.stem(w[0]), w[1]))
+        if re.search("\\w+", w[0]): # remove tokens that are only punctuation
+            total_words.add(w[0])
+            total_types.add(w[1])
+            Cats["stopwords"][c].AddTuple(w)
+            if w[0] not in stopword_list:
+                Cats[""][c].AddTuple(w)
+                Cats["lemma"][c].AddTuple((Lemmatize(w), w[1]))
+                Cats["stem"][c].AddTuple((porter.stem(w[0]), w[1]))
 
 if Cats[""]["adventure"] is Cats[""]["belles_lettres"]:
     print(">=(")

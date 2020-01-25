@@ -1,3 +1,6 @@
+# CPSC 4310 - Assignment 1 code
+# Author: Kyle Akerstrom
+
 import nltk
 from nltk.corpus import brown
 from nltk.corpus import stopwords

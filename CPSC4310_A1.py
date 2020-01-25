@@ -71,10 +71,6 @@ for c in brown.categories():
                 Cats["lemma"][c].AddTuple((Lemmatize(w), w[1]))
                 Cats["stem"][c].AddTuple((porter.stem(w[0]), w[1]))
 
-if Cats[""]["adventure"] is Cats[""]["belles_lettres"]:
-    print(">=(")
-    quit()
-
 disp = [("WITH STOPWORDS:", "stopwords"), \
     ("WITHOUT STOPWORDS:", ""), \
     ("WITHOUT STOPWORDS, WITH LEMMATIZATION:", "lemma"), \

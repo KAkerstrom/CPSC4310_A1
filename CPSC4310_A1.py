@@ -88,5 +88,5 @@ for d in disp:
     for c in brown.categories():
         print("\t", c.ljust(20, ' '), '\t', Cats[d[1]][c].GetWordAmt(), '\t', Cats[d[1]][c].GetTypeAmt(), sep = "")
     
-print("\n\tTotal words:", len(total_words))
-print("\tTotal types:", len(total_words))
+print("\nTotal words:", len(total_words))
+print("Total types:", len(total_types))

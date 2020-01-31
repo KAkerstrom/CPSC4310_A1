@@ -28,6 +28,25 @@ float Z_Speed = 0.0f;
 float Z_Max_Speed = 0.005f;
 float Z_Off   = -5.0f;
 
+// Quick fix for enums, which apparently didn't work on the lab computers
+#define c_black 0
+#define c_white 1
+#define c_red 2
+#define c_green 3
+#define c_blue 4
+#define c_cyan 5
+#define c_maroon 6
+#define c_purple 7
+#define c_teal 8
+#define c_yellow 9
+
+#define side_top 0
+#define side_bottom 1
+#define side_right 2
+#define side_left 3
+#define side_front 4
+#define side_back 5
+
 //////////////////////////////////////////////////////////
 // String rendering routine; leverages on GLUT routine. //
 //////////////////////////////////////////////////////////
@@ -55,7 +74,6 @@ struct float3
 
 struct rgba
 {
-   enum colors { c_black, c_white, c_red, c_green, c_blue, c_cyan, c_maroon, c_purple, c_teal, c_yellow };
    rgba()
    {
       red = 0;
@@ -64,7 +82,7 @@ struct rgba
       alpha = 0;
    };
 
-   rgba(colors preset, float a)
+   rgba(int preset, float a)
    {
       switch (preset)
       {
@@ -94,17 +112,16 @@ struct rgba
 class Cube
 {
    public:
-      enum sides { top, bottom, left, right, front, back };
       Cube()
       {
          for (int i = 0; i < 6; i++)
-            colors[(sides)i] = rgba(0, 0, 0, 1);
+            colors[i] = rgba(0, 0, 0, 1);
       };
 
       Cube(float3 _center, float _size) : center(_center), size(_size)
       {
          for (int i = 0; i < 6; i++)
-            colors[(sides)i] = rgba(0, 0, 0, 1);
+            colors[i] = rgba(0, 0, 0, 1);
       };
 
       void create()
@@ -117,7 +134,7 @@ class Cube
          // Back face
          glNormal3f( 0.0f, 0.0f, -1.0f); // facing back
 
-         glColor4f(colors[back].red, colors[back].blue, colors[back].green, 1 - colors[back].alpha);
+         glColor4f(colors[side_back].red, colors[side_back].blue, colors[side_back].green, 1 - colors[side_back].alpha);
          glTexCoord2f(0.0f, 0.0f); glVertex3f(-size, -size, -size); // top left back
          glTexCoord2f(size, 0.0f); glVertex3f( size, -size, -size); // top right back
          glTexCoord2f(size, size); glVertex3f( size,  size, -size); // bottom right back
@@ -126,7 +143,7 @@ class Cube
          // Right face
          glNormal3f( 1.0f, 0.0f, 0.0f);
 
-         glColor4f(colors[right].red, colors[right].blue, colors[right].green, 1 - colors[right].alpha);
+         glColor4f(colors[side_right].red, colors[side_right].blue, colors[side_right].green, 1 - colors[side_right].alpha);
          glTexCoord2f(size, 0.0f); glVertex3f( size, -size, -size); // top right back
          glTexCoord2f(size, size); glVertex3f( size,  size, -size); // bottom right back
          glTexCoord2f(0.0f, size); glVertex3f( size,  size,  size); // bottom right front
@@ -135,7 +152,7 @@ class Cube
          // Front face
          glNormal3f( 0.0f, 0.0f, 1.0f);
          
-         glColor4f(colors[front].red, colors[front].blue, colors[front].green, 1 - colors[front].alpha);
+         glColor4f(colors[side_front].red, colors[side_front].blue, colors[side_front].green, 1 - colors[side_front].alpha);
          glTexCoord2f(0.0f, 0.0f); glVertex3f(-size, -size,  size); // top left front
          glTexCoord2f(size, 0.0f); glVertex3f( size, -size,  size); // top right front
          glTexCoord2f(size, size); glVertex3f( size,  size,  size); // bottom right front
@@ -145,7 +162,7 @@ class Cube
          // Left Face
          glNormal3f(-1.0f, 0.0f, 0.0f);  
          
-         glColor4f(colors[left].red, colors[left].blue, colors[left].green, 1 - colors[left].alpha);
+         glColor4f(colors[side_left].red, colors[side_left].blue, colors[side_left].green, 1 - colors[side_left].alpha);
          glTexCoord2f(0.0f, 0.0f); glVertex3f(-size, -size, -size); // top left back
          glTexCoord2f(size, 0.0f); glVertex3f(-size, -size,  size); // top left front
          glTexCoord2f(size, size); glVertex3f(-size,  size,  size); // bottom left front
@@ -154,7 +171,7 @@ class Cube
          // Top Face
          glNormal3f(0.0f, -1.0f, .0f);  
          
-         glColor4f(colors[top].red, colors[top].blue, colors[top].green, 1 - colors[top].alpha);
+         glColor4f(colors[side_top].red, colors[side_top].blue, colors[side_top].green, 1 - colors[side_top].alpha);
          glTexCoord2f(size, 0.0f); glVertex3f( size, -size, size); // right top front 
          glTexCoord2f(0.0f, 0.0f); glVertex3f(-size, -size, size); // left top front
          glTexCoord2f(0.0f, size); glVertex3f(-size, -size,  -size); // left top back
@@ -163,7 +180,7 @@ class Cube
          // Bottom Face
          glNormal3f(0.0f, 1.0f, 0.0f);
          
-         glColor4f(colors[bottom].red, colors[bottom].blue, colors[bottom].green, 1 - colors[bottom].alpha);
+         glColor4f(colors[side_bottom].red, colors[side_bottom].blue, colors[side_bottom].green, 1 - colors[side_bottom].alpha);
          glTexCoord2f(size, 0.0f); glVertex3f( size, size, size); // right top front 
          glTexCoord2f(0.0f, 0.0f); glVertex3f(-size, size, size); // left top front
          glTexCoord2f(0.0f, size); glVertex3f(-size, size,  -size); // left top back
@@ -173,7 +190,7 @@ class Cube
          glEnd();
       }
 
-      void SetColor(sides side, rgba color) { colors[side] = color; }
+      void SetColor(int side, rgba color) { colors[side] = color; }
 
       float size;
       float3 center;
@@ -205,12 +222,12 @@ void CallBackRenderScene(void)
 
    float3 center(0.0, 0.0, 0.0);
    Cube c(center, 1.0);
-   c.SetColor(Cube::sides::back,   rgba(rgba::colors::c_yellow, 0.0));
-   c.SetColor(Cube::sides::front,  rgba(rgba::colors::c_red,    0.2));
-   c.SetColor(Cube::sides::left,   rgba(rgba::colors::c_cyan,   0.4));
-   c.SetColor(Cube::sides::right,  rgba(rgba::colors::c_maroon, 0.0));
-   c.SetColor(Cube::sides::top,    rgba(rgba::colors::c_purple, 0.6));
-   c.SetColor(Cube::sides::bottom, rgba(rgba::colors::c_teal,   0.4));
+   c.SetColor(side_back,   rgba(c_yellow, 0.0f));
+   c.SetColor(side_front,  rgba(c_red,    0.2f));
+   c.SetColor(side_left,   rgba(c_cyan,   0.4f));
+   c.SetColor(side_right,  rgba(c_maroon, 0.0f));
+   c.SetColor(side_top,    rgba(c_purple, 0.6f));
+   c.SetColor(side_bottom, rgba(c_teal,   0.4f));
    c.create();
 
    // Move back to the origin

@@ -1,0 +1,31 @@
+INCLUDE = -I/usr/include/
+
+LIBDIR  = -L/usr/lib/
+
+
+
+COMPILERFLAGS = -Wall
+
+CC = gcc
+
+CFLAGS = $(COMPILERFLAGS) $(INCLUDE)
+
+LIBRARIES = -lX11 -lXi -lXmu -lglut -lGL -lGLU -lm
+
+
+
+All: akerstrom
+
+
+
+akerstrom: akerstrom.o
+
+	$(CC) $(CFLAGS) -o $@ $(LIBDIR) $< $(LIBRARIES)
+
+
+
+.PHONY : clean
+
+clean :
+
+	-rm akerstrom akerstrom.o
